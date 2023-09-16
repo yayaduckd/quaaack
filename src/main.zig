@@ -1,17 +1,25 @@
 const std = @import("std");
+const stdin = std.io.getStdIn().reader();
+
+const stdout_file = std.io.getStdOut().writer();
+var bw = std.io.bufferedWriter(stdout_file);
+const stdout = bw.writer();
+
+fn nextInputWord() !?[]u8 {
+    var buf: [1000]u8 = undefined;
+
+    std.debug.print("Input please:", .{});
+    const receivedInput: ?[]u8 = try stdin.readUntilDelimiterOrEof(buf[0..], ' ');
+
+    return receivedInput;
+}
 
 pub fn main() !void {
-    // Prints to stderr (it's a shortcut based on `std.io.getStdErr()`)
-    std.debug.print("All your {s} are belong to us.\n", .{"codebase"});
+    var word: ?[]u8 = try nextInputWord();
 
-    // stdout is for the actual output of your application, for example if you
-    // are implementing gzip, then only the compressed bytes should be sent to
-    // stdout, not any debugging messages.
-    const stdout_file = std.io.getStdOut().writer();
-    var bw = std.io.bufferedWriter(stdout_file);
-    const stdout = bw.writer();
-
-    try stdout.print("Run `zig build test` to run the tests.\n", .{});
+    if (word) |actualWord| {
+        std.debug.print("{s} 🦆\n", .{actualWord});
+    }
 
     try bw.flush(); // don't forget to flush!
 }
